@@ -23,7 +23,7 @@ def run_path(name):
 with DAG(
     dag_id="branching_example",
     start_date=datetime(2024, 1, 1),
-    schedule=None,          # вместо schedule_interval
+    schedule=None,
     catchup=False,
     default_args=default_args,
     tags=["training"],
@@ -48,4 +48,8 @@ with DAG(
 
     join = EmptyOperator(
         task_id="join",
-        trigger_rule="none_failed_mi_
+        trigger_rule="none_failed_min_one_success",
+    )
+
+    start >> decide
+    decide >> [path_a, path_b] >> join
